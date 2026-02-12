@@ -1,26 +1,3 @@
-// const db = require("../../config/db.config");
-// exports.createProduct = async (data) => {
-//   const {
-//     name,
-//     category_id,
-//     price,
-//     discount = 0,
-//     description,
-//     status = "ACTIVE",
-//   } = data;
-
-//   const [result] = await db.query(
-//     `INSERT INTO products
-//      (name, category_id, price, discount, description, status)
-//      VALUES (?, ?, ?, ?, ?, ?)`,
-//     [name, category_id, price, discount, description, status],
-//   );
-
-//   return {
-//     message: "Product created successfully",
-//     productId: result.insertId,
-//   };
-// };
 const db = require("../../config/db.config");
 const jwt = require("jsonwebtoken");
 const jwtConfig = require("../../config/jwt.config");

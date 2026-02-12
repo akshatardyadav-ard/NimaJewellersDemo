@@ -1,27 +1,45 @@
 const paymentService = require("./payment.service");
 
-exports.initiate = async (req, res, next) => {
-  try {
-    const { orderId, paymentMethod } = req.body;
-    const data = await paymentService.initiatePayment(orderId, paymentMethod);
-    res.status(201).json({ success: true, data });
-  } catch (err) {
-    next(err);
-  }
-};
+// exports.initiate = async (req, res, next) => {
+//   try {
+//     const { orderId, paymentMethod } = req.body;
+//     const data = await paymentService.initiatePayment(orderId, paymentMethod);
+//     res.status(201).json({ success: true, data });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 
-exports.callback = async (req, res, next) => {
+// exports.callback = async (req, res, next) => {
+//   try {
+//     const data = await paymentService.paymentCallback(req.body);
+//     res.json({ success: true, data });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+// exports.status = async (req, res, next) => {
+//   try {
+//     const data = await paymentService.getPaymentStatus(req.params.orderId);
+//     res.json({ success: true, data });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+exports.createRazorpayOrder = async (req, res, next) => {
   try {
-    const data = await paymentService.paymentCallback(req.body);
+    const data = await paymentService.createRazorpayOrder(req.body.orderId);
     res.json({ success: true, data });
   } catch (err) {
     next(err);
   }
 };
 
-exports.status = async (req, res, next) => {
+exports.verifyRazorpay = async (req, res, next) => {
   try {
-    const data = await paymentService.getPaymentStatus(req.params.orderId);
+    const data = await paymentService.verifyRazorpayPayment(req.body);
     res.json({ success: true, data });
   } catch (err) {
     next(err);

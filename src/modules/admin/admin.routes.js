@@ -37,15 +37,15 @@ router.post(
   "/products/:id/images",
   auth,
   role("ADMIN"),
-  productUpload.single("image"),
-  controller.uploadProductImage,
+  productUpload.array("images", 10), // allow up to 10 images
+  controller.uploadProductImages,
 );
 
 router.post(
   "/banners/upload",
   auth,
   role("ADMIN"),
-  bannerUpload.single("image"),
+  bannerUpload.array("images", 10),
   controller.uploadBanner,
 );
 

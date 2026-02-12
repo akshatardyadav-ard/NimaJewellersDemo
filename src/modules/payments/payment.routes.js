@@ -2,8 +2,10 @@ const router = require("express").Router();
 const controller = require("./payment.controller");
 const auth = require("../../middlewares/auth.middleware");
 
-router.post("/initiate", auth, controller.initiate);
-router.post("/callback", controller.callback); // Gateway webhook
-router.get("/status/:orderId", auth, controller.status);
+// router.post("/initiate", auth, controller.initiate);
+// router.post("/callback", controller.callback); // Gateway webhook
+// router.get("/status/:orderId", auth, controller.status);
+router.post("/razorpay/create-order", auth, controller.createRazorpayOrder);
+router.post("/razorpay/verify", controller.verifyRazorpay);
 
 module.exports = router;

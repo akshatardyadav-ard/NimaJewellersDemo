@@ -1,18 +1,3 @@
-// const adminService = require("./admin.service");
-
-// exports.createProduct = async (req, res, next) => {
-//   try {
-//     const result = await adminService.createProduct(req.body);
-
-//     res.status(201).json({
-//       success: true,
-//       data: result,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
-
 const adminService = require("./admin.service");
 const db = require("../../config/db.config");
 
@@ -94,19 +79,34 @@ exports.createBanner = async (req, res, next) => {
   }
 };
 
-exports.uploadProductImage = async (req, res, next) => {
+exports.uploadProductImages = async (req, res, next) => {
   try {
-    const imageUrl = `/uploads/products/${req.file.filename}`;
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No files uploaded" });
+    }
 
+    const productId = req.params.id;
+
+    // Create array of image URLs
+    const imageUrls = req.files.map(
+      (file) => `/uploads/products/${file.filename}`,
+    );
+
+    // Insert all images into DB
+    const values = imageUrls.map((url) => [productId, url, 0]); // is_primary = 0 by default
+
+    // Bulk insert
     await db.query(
-      "INSERT INTO product_images (product_id, image_url, is_primary) VALUES (?, ?, ?)",
-      [req.params.id, imageUrl, 1],
+      "INSERT INTO product_images (product_id, image_url, is_primary) VALUES ?",
+      [values],
     );
 
     res.status(201).json({
       success: true,
-      message: "Product image uploaded",
-      imageUrl,
+      message: "Product images uploaded",
+      images: imageUrls,
     });
   } catch (err) {
     next(err);
@@ -115,17 +115,29 @@ exports.uploadProductImage = async (req, res, next) => {
 
 exports.uploadBanner = async (req, res, next) => {
   try {
-    const imageUrl = `/uploads/banners/${req.file.filename}`;
+    if (!req.files || req.files.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No files uploaded" });
+    }
 
-    await db.query("INSERT INTO banners (title, image_url) VALUES (?, ?)", [
-      req.body.title,
-      imageUrl,
-    ]);
+    const title = req.body.title;
+
+    // Build array of banner image URLs
+    const imageUrls = req.files.map(
+      (file) => `/uploads/banners/${file.filename}`,
+    );
+
+    // Prepare bulk insert values
+    const values = imageUrls.map((url) => [title, url]);
+
+    // Insert multiple banner records
+    await db.query("INSERT INTO banners (title, image_url) VALUES ?", [values]);
 
     res.status(201).json({
       success: true,
-      message: "Banner uploaded",
-      imageUrl,
+      message: "Banners uploaded",
+      images: imageUrls,
     });
   } catch (err) {
     next(err);

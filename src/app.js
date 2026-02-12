@@ -20,11 +20,15 @@ const cors = require("cors");
 const routes = require("./routes");
 const path = require("path");
 const app = express();
+const errorHandler = require("./middlewares/errorHandler");
 
 app.use(cors());
 app.use(express.json());
 app.use(routes);
 
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+// GLOBAL ERROR HANDLER (must be last)
+app.use(errorHandler);
 
 module.exports = app;
